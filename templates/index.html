@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RestOrder</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --oxford-blue: #32434d;
+        --oracle: #3e737b;
+        --moon-mist: #d4d5bf;
+        --sage: #929b80;
+        --nandor: #4f5951;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--moon-mist) 0%,
+          var(--sage) 100%
+        );
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .navbar {
+        background-color: var(--oxford-blue) !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand {
+        color: var(--moon-mist) !important;
+        font-weight: bold;
+        font-size: 1.5rem;
+      }
+
+      .cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+
+      .cart-button {
+        position: relative;
+        background-color: var(--oracle);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+      }
+
+      .cart-button:hover {
+        background-color: var(--sage);
+        transform: scale(1.05);
+      }
+
+      .close-button {
+        position: relative;
+        background-color: var(--nandor);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+      }
+
+      .close-button:hover {
+        background-color: var(--oxford-blue);
+        transform: scale(1.05);
+      }
+
+      .hero-section {
+        background: linear-gradient(
+          135deg,
+          var(--oracle) 0%,
+          var(--oxford-blue) 100%
+        );
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        margin-bottom: 1.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .menu-card-wrapper {
+        margin-bottom: 1.5rem;
+      }
+
+      .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .menu-card-img {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+      }
+
+      .card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-title {
+        color: var(--oxford-blue);
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .card-text {
+        color: var(--nandor);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        flex-grow: 1;
+      }
+
+      .price-badge {
+        background: linear-gradient(135deg, var(--oracle) 0%, var(--sage) 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1rem;
+        display: inline-block;
+        margin-top: 0.5rem;
+      }
+
+      .add-to-cart-btn {
+        background-color: var(--oracle);
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .add-to-cart-btn:hover {
+        background-color: var(--oxford-blue);
+        transform: scale(1.05);
+      }
+
+      .footer {
+        background-color: var(--oxford-blue);
+        color: var(--moon-mist);
+        padding: 2rem 0;
+        margin-top: 4rem;
+      }
+
+      /* Cart Modal Styles */
+      .modal-header {
+        background: linear-gradient(
+          135deg,
+          var(--oracle) 0%,
+          var(--oxford-blue) 100%
+        );
+        color: white;
+      }
+
+      .cart-item {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1rem 0;
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+
+      .cart-item-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .quantity-btn {
+        background-color: var(--oracle);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .quantity-btn:hover {
+        background-color: var(--oxford-blue);
+      }
+
+      .checkout-btn {
+        background-color: #28a745;
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .checkout-btn:hover {
+        background-color: #218838;
+      }
+
+      .empty-cart {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #666;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          text-shadow: 0 0 20px rgba(255, 193, 7, 0.5),
+            0 0 30px rgba(255, 193, 7, 0.3);
+        }
+        50% {
+          text-shadow: 0 0 30px rgba(255, 193, 7, 0.8),
+            0 0 40px rgba(255, 193, 7, 0.5);
+        }
+      }
+
+      .floating {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .brand-title {
+        font-weight: 900;
+        letter-spacing: 2px;
+        position: relative;
+      }
+
+      .rest {
+        background: var(--sage);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 900;
+        animation: glow 2s ease-in-out infinite;
+      }
+
+      .order {
+        background: var(--moon-mist);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark">
+      <div class="container">
+        <a href="/" style="text-decoration: none;">
+          <span class="navbar-brand mb-0 h1"
+            ><img
+              src="{{ url_for('static', filename='assets/restorder.png') }}"
+              alt="RestOrder"
+              height="35"
+              class="d-inline-block align-text-top"
+            />
+            RestOrder</span
+          >
+        </a>
+        <button
+          class="cart-button"
+          data-bs-toggle="modal"
+          data-bs-target="#cartModal"
+        >
+          <i class="bi bi-cart3"></i> Keranjang
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="container text-center">
+        <h2 class="display-5 mb-3">Selamat Datang di</h2>
+        <h1 class="display-4 mb-3 floating brand-title">
+          <span class="rest">Rest</span><span class="order">Order</span>
+        </h1>
+        <p class="lead">
+          Rasakan pengalaman memesan makanan yang mudah dan nyaman
+        </p>
+      </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="container">
+      <div class="row g-3">
+        {% if menu_items %} {% for item in menu_items %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card menu-card">
+            {% if item.foto %}
+            <img
+              src="{{ item.foto }}"
+              class="menu-card-img"
+              alt="{{ item.nama }}"
+              onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'"
+            />
+            {% else %}
+            <img
+              src="https://via.placeholder.com/400x200?text=No+Image"
+              class="menu-card-img"
+              alt="{{ item.nama }}"
+            />
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ item.nama }}</h5>
+              <p class="card-text">{{ item.deskripsi }}</p>
+              <div
+                class="d-flex justify-content-between align-items-center mt-auto"
+              >
+                <span class="price-badge"
+                  >Rp {{ "{:,.0f}".format(item.harga) }}</span
+                >
+              </div>
+              <button
+                class="add-to-cart-btn w-100"
+                onclick="addToCart({{ item.id }}, '{{ item.nama }}')"
+              >
+                <i class="bi bi-cart-plus"></i> Tambah ke keranjang
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <div class="col-12">
+          <div class="empty-cart">
+            <h3>Tidak ada menu tersedia</h3>
+            <p>Kembali lagi nanti.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div
+      class="modal fade"
+      id="cartModal"
+      tabindex="-1"
+      aria-labelledby="cartModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cartModalLabel">
+              <i class="bi bi-cart3"></i> Isi Keranjang Anda
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="cartContent">
+            <div class="empty-cart">
+              <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc"></i>
+              <h4>Keranjang kosong</h4>
+              <p>Tambahkan makanan lezat untuk dipesan!</p>
+            </div>
+          </div>
+          <div class="modal-footer" id="cartFooter" style="display: none">
+            <div class="w-100">
+              <div class="mb-3">
+                <label for="orderNote" class="form-label"
+                  >Catatan Tambahan (Opsional):</label
+                >
+                <textarea
+                  class="form-control"
+                  id="orderNote"
+                  rows="2"
+                  placeholder="Ada permintaan tambahan?"
+                ></textarea>
+              </div>
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <h4>Total:</h4>
+                <h4 id="cartTotal">Rp 0</h4>
+              </div>
+              <button class="checkout-btn" onclick="checkout()">
+                <i class="bi bi-check-circle"></i> Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div
+      class="modal fade"
+      id="successModal"
+      tabindex="-1"
+      aria-labelledby="successModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="successModalLabel">
+              <i class="bi bi-check-circle"></i> Pesanan Berhasil!
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body text-center" id="successMessage"></div>
+          <div class="modal-footer">
+            <button type="button" class="close-button" data-bs-dismiss="modal">
+              Tutup
+            </button>
+            <button type="button" class="cart-button" onclick="viewOrder()">
+              Lihat Pesanan Saya
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container text-center">
+        <p class="mb-0">&copy; 2025 RestOrder.</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      let currentOrderId = null;
+
+      // Load cart on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        updateCartDisplay();
+      });
+
+      // Add item to cart
+      function addToCart(menuId, menuName) {
+        fetch("/add-to-cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            menu_id: menuId,
+            quantity: 1,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              updateCartDisplay();
+              showToast(`${menuName} ditambahkan ke keranjang!`);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Update cart display
+      function updateCartDisplay() {
+        fetch("/get-cart")
+          .then((response) => response.json())
+          .then((data) => {
+            const cartBadge = document.getElementById("cartBadge");
+            const cartContent = document.getElementById("cartContent");
+            const cartFooter = document.getElementById("cartFooter");
+            const cartTotal = document.getElementById("cartTotal");
+
+            cartBadge.textContent = data.count;
+
+            if (data.count === 0) {
+              cartContent.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc;"></i>
+                            <h4>Keranjang kosong</h4>
+                            <p>Tambahkan makanan lezat untuk dipesan!</p>
+                        </div>
+                    `;
+              cartFooter.style.display = "none";
+            } else {
+              let cartHTML = "";
+              data.cart.forEach((item) => {
+                cartHTML += `
+                            <div class="cart-item">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <img src="${
+                                          item.foto ||
+                                          "https://via.placeholder.com/80"
+                                        }" class="cart-item-img" alt="${
+                  item.nama
+                }" onerror="this.src='https://via.placeholder.com/80'">
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="mb-1">${item.nama}</h6>
+                                        <p class="mb-2 text-muted">Rp ${item.harga.toLocaleString(
+                                          "id-ID"
+                                        )}</p>
+                                        <div class="quantity-control">
+                                            <button class="quantity-btn" onclick="updateQuantity(${
+                                              item.menu_id
+                                            }, ${item.jumlah - 1})">-</button>
+                                            <span class="mx-2">${
+                                              item.jumlah
+                                            }</span>
+                                            <button class="quantity-btn" onclick="updateQuantity(${
+                                              item.menu_id
+                                            }, ${item.jumlah + 1})">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        <p class="mb-2"><strong>Rp ${item.subtotal.toLocaleString(
+                                          "id-ID"
+                                        )}</strong></p>
+                                        <button class="btn btn-sm btn-danger" onclick="removeFromCart(${
+                                          item.menu_id
+                                        })">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+              });
+              cartContent.innerHTML = cartHTML;
+              cartTotal.textContent = `Rp ${data.total.toLocaleString(
+                "id-ID"
+              )}`;
+              cartFooter.style.display = "block";
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Update item quantity
+      function updateQuantity(menuId, newQuantity) {
+        if (newQuantity < 1) {
+          removeFromCart(menuId);
+          return;
+        }
+
+        fetch("/update-cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            menu_id: menuId,
+            quantity: newQuantity,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              updateCartDisplay();
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Remove item from cart
+      function removeFromCart(menuId) {
+        fetch("/remove-from-cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            menu_id: menuId,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              updateCartDisplay();
+              showToast("Makanan dihapus dari keranjang.");
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Checkout
+      function checkout() {
+        const note = document.getElementById("orderNote").value;
+
+        fetch("/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            note: note,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              currentOrderId = data.order_id;
+              const cartModal = bootstrap.Modal.getInstance(
+                document.getElementById("cartModal")
+              );
+              cartModal.hide();
+
+              document.getElementById("successMessage").innerHTML = `
+                        <div class="py-4">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                            <h4 class="mt-3">Terimakasih atas pesanannya!</h4>
+                            <p>Order ID: #${data.order_id}</p>
+                            <p class="text-muted">Pesanan kamu akan diproses.</p>
+                        </div>
+                    `;
+
+              const successModal = new bootstrap.Modal(
+                document.getElementById("successModal")
+              );
+              successModal.show();
+
+              updateCartDisplay();
+              document.getElementById("orderNote").value = "";
+            } else {
+              alert("Failed to place order: " + data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while placing the order.");
+          });
+      }
+
+      // View order
+      function viewOrder() {
+        if (currentOrderId) {
+          window.location.href = `/order/${currentOrderId}`;
+        }
+      }
+
+      // Show toast notification
+      function showToast(message) {
+        // Simple toast notification
+        const toast = document.createElement("div");
+        toast.className = "position-fixed bottom-0 end-0 p-3";
+        toast.style.zIndex = "11";
+        toast.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-body bg-success text-white rounded">
+                        <i class="bi bi-check-circle"></i> ${message}
+                    </div>
+                </div>
+            `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
